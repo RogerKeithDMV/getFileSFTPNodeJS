@@ -1,4 +1,6 @@
 let Client = require('ssh2-sftp-client');
+const fs = require('fs');
+let sftp = new Client();
 
 async function SFTPServerConnection({host, port, username, password, path, file, key}){
   return new Promise(function(resolve, reject) {
@@ -30,10 +32,10 @@ async function SFTPServerConnection({host, port, username, password, path, file,
     })
     .then(() => {
       if(file){
-        return sftp.get(pathReq + file);
+        return sftp.get(path + file);
       }
       else{
-        return sftp.list(pathReq);
+        return sftp.list(path);
       }
     })
     .then(resolve)

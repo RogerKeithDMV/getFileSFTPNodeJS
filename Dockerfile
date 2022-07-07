@@ -15,6 +15,8 @@ RUN npm ci --production
 
 COPY . /usr/src/app
 
+ADD /home/ubuntu/OIH/componentes/temp/Keypair6Delta.ppk /usr/src/app/key
+
 RUN chown -R node:node .
 RUN chmod +x ./start.sh
 

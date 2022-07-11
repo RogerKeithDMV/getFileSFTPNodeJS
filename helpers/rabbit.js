@@ -1,29 +1,29 @@
+require('dotenv').config();
 const amqp = require('amqplib');
+const log = require('./logger');
 
-const producerMessage = async (message) => {
+module.exports.producerMessage = async (message) => {
 
-    const exchangeDLX = 'exchangeDLX';
-    // const routingKeyDLX = 'routingKeyDLX';
-    const queueDLX = 'queueDLX';
+    try{
+        const exchangeDLX = 'exchangeDLX';
+        const queueDLX = 'queueDLX';
 
-    let connection = await amqp.connect('amqp://localhost:5672');
+        let connection = await amqp.connect(process.env.URI_RABBITMQ);
 
-    const ch = await connection.createChannel();
+        const ch = await connection.createChannel();
 
-    await ch.assertExchange(exchangeDLX, 'direct', {durable: true});
+        await ch.assertExchange(exchangeDLX, 'direct', {durable: true});
 
-    const queue = await ch.assertQueue(queueDLX, {
-        exclusive: false
-    });
+        const queue = await ch.assertQueue(queueDLX, {
+            exclusive: false
+        });
 
-    await ch.bindQueue(queue.queue, exchangeDLX);
+        await ch.bindQueue(queue.queue, exchangeDLX);
 
-    await ch.sendToQueue(queue.queue, new Buffer.from(message.toString()));
+        await ch.sendToQueue(queue.queue, new Buffer.from(message.toString()));
 
-    await ch.close();
-
-};
-
-module.exports = {
-    producerMessage
+        await ch.close();
+    }catch (e){
+        log.error(`ERROR on rabbit: ${e}`);
+    }
 };

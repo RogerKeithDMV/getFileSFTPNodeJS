@@ -15,12 +15,14 @@ RUN npm ci --production
 
 COPY . /usr/src/app
 
-RUN mkdir key
+RUN mkdir /usr/src/app/key
 
-ADD /home/ubuntu/OIH/componentes/temp/Keypair6Delta.ppk /usr/src/app/key
+COPY ./Keypair6Delta.ppk /usr/src/app/key
 
 RUN chown -R node:node .
 RUN chmod +x ./start.sh
+
+ENV URI_RABBITMQ='amqp://guest:guest@rabbitmq-service.oih.svc.cluster.local'
 
 USER node
 

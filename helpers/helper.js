@@ -12,7 +12,7 @@ async function SFTPServerConnection({host, port, username, password, path, file,
       privateKey: fs.readFileSync(key)
     })
     .then(() => {
-      if(fileReq){
+      if(file){
         return sftp.get(path + file);
       }
       else{

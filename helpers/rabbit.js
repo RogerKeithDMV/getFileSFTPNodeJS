@@ -3,7 +3,6 @@ const amqp = require('amqplib');
 const log = require('./logger');
 
 module.exports.producerMessage = async (message) => {
-
     try{
         const exchangeDLX = 'exchangeDLX';
         const queueDLX = 'queueDLX';
@@ -20,7 +19,7 @@ module.exports.producerMessage = async (message) => {
 
         await ch.bindQueue(queue.queue, exchangeDLX);
 
-        await ch.sendToQueue(queue.queue, new Buffer.from(message.toString()));
+        ch.sendToQueue(queue.queue, new Buffer.from(message.toString()),{persistent: true});
 
         await ch.close();
     }catch (e){

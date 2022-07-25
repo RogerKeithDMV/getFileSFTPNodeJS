@@ -2,7 +2,7 @@ let Client = require('ssh2-sftp-client');
 const fs = require('fs');
 let sftp = new Client();
 const log = require('../../helpers/logger');
-const rabbitmq = require('rabbitmqcg-nxg-oih');
+const rabbitmq = require('../../helpers/rabbit');
 
 const ERROR_PROPERTY = 'Error missing property';
 
@@ -114,10 +114,12 @@ module.exports.process = async function processTrigger(msg, cfg, snapshot = {}){
     } catch (e) {
         log.error(`ERROR: ${e}`);
         this.emit('error', e);
-        await rabbitmq.producerMessage(msg.toString(), e.toString());
+        await rabbitmq.producerMessage(e);
     }
 
     finally{
+      console.log("Entando a finally");
       sftp.end();
+      console.log("Termina finally");
     }
 };
